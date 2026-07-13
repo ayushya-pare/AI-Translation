@@ -1,0 +1,20 @@
+flowchart TD
+    %% Nodes
+    TMX["1. TMX Data"]
+    GT(["2.1 Ground Truth"])
+    Glossary(["2.2 Glossary"])
+    Input["2.3 Input Text"]
+    LLM["3. LLM Model"]
+    Trans(["4. Translated Output"])
+    Compare{"5. Compare"}
+    Metrics["Metrics"]
+
+    %% Connections
+    TMX --> GT
+    TMX --> Glossary
+    Glossary -->|"Context for RAG"| LLM
+    Input --> LLM
+    LLM --> Trans
+    Trans --> Compare
+    GT --> Compare
+    Compare --> Metrics

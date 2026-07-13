@@ -1,0 +1,11 @@
+# Python requirements for LLM-based translation evaluation project
+pdfplumber
+pandas
+numpy
+openpyxl
+python-docx
+scikit-learn
+matplotlib
+jupyter
+
+
