@@ -19,8 +19,10 @@ NUM_WORKERS = 5
 
 def translate_text(german_text):
     # Send one German text to the LLM and return the English translation.
-    prompt = f"""Translate this German text into English.
-Return only the English translation. Do not use Markdown or explanations.
+    prompt = f"""Act as a professional German-to-English translator. 
+    Write a natural English version of this German text. 
+    Output only the translated text. 
+    Do not add Markdown, comments or explanations.
 
 German:
 {german_text}
