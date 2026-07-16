@@ -1,5 +1,6 @@
 import csv
 import os
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import requests
@@ -13,6 +14,7 @@ API_KEY = os.getenv("API_KEY")
 BASE_URL = os.getenv("BASE_URL", "https://openwebui-test.hrz.uni-bonn.de/api")
 MODEL = os.getenv("MODEL_NAME", "local.openai/gpt-oss-120b")
 REQUEST_TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", "60"))
+NUM_WORKERS = 5
 
 
 def translate_text(german_text):
@@ -71,25 +73,31 @@ def save_translations(rows):
         writer.writerows(rows)
 
 
+def translate_row(row):
+    # Translate one CSV row.
+    english_translation = translate_text(row["de_text"])
+
+    return {
+        "de_text": row["de_text"],
+        "en_grtr": row["en_grtr"],
+        "en_tr_llm": english_translation,
+    }
+
+
 def main():
     if not API_KEY:
         raise SystemExit("Set API_KEY first.")
 
     rows = read_test_set()
-    translated_rows = []
 
-    for index, row in enumerate(rows, start=1):
-        english_translation = translate_text(row["de_text"])
+    with ThreadPoolExecutor(max_workers=NUM_WORKERS) as executor:
+        translated_rows = []
 
-        translated_rows.append(
-            {
-                "de_text": row["de_text"],
-                "en_grtr": row["en_grtr"],
-                "en_tr_llm": english_translation,
-            }
-        )
-
-        print(f"Translated {index}/{len(rows)}")
+        for index, translated_row in enumerate(
+            executor.map(translate_row, rows), start=1
+        ):
+            translated_rows.append(translated_row)
+            print(f"Translated {index}/{len(rows)}")
 
     save_translations(translated_rows)
     print(f"Saved output: {OUTPUT_CSV}")
