@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 INPUT_CSV = ROOT / "data/outputs/tmx_text_pairs.csv"
-OUTPUT_CSV = ROOT / "data/glossary/glossary_from_tmx_text_pairs.csv"
+OUTPUT_CSV = ROOT / "data/glossary/glossary.csv"
 
 MAX_WORDS = int(os.getenv("MAX_WORDS", "12"))
 MAX_CHARS = int(os.getenv("MAX_CHARS", "140"))
